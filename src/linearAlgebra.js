@@ -1,3 +1,15 @@
+window.data = {};
+
+var guid = function () {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
+
 var degreesToRadians = function (deg) {
 	return (deg / 180) * Math.PI;
 };
@@ -6,7 +18,7 @@ var radiansToDegrees = function (rad) {
 	return (rad / Math.PI) * 180;
 };
 
-var vector = function (arr) {
+var vector = function (arr, name) {
 	if (arr) {
 		if (arr instanceof Array) {
 			this.intrinsic = arr;
@@ -18,6 +30,9 @@ var vector = function (arr) {
 	}
 
 	this.n = this.intrinsic.length;
+	if (name) {
+		window.data[name] = this;
+	}
 };
 
 vector.prototype.sumSquared = function() {
@@ -105,7 +120,15 @@ vector.prototype.angle = function (vec) {
 	}
 };
 
-var matrix = function (vals, n) {
+vector.prototype.scalarMult = function (n) {
+	var arr = this.intrinsic;
+	for (i in arr) {
+		arr[i] *= n;
+	}
+	return new vector(arr);
+};
+
+var matrix = function (vals, n, name) {
 	if (vals) {
 		// See if argument is array
 		if (vals instanceof Array) {
@@ -168,42 +191,6 @@ var matrix = function (vals, n) {
 	this.display.childNodes[1].childNodes[0].classList.add("matrix");
 	var matrixDisplay = this.display.childNodes[1].childNodes[0];
 	matrixDisplay.parentMatrix = this;
-	var handlePaste = function (e) {
-		//setTimeout(function () {
-			var pasteData = e.clipboardData.getData('text/plain');
-			var rows = pasteData.split("\n");
-			if (rows[rows.length - 1].length == 0) {
-				rows.pop();
-			}
-			for (i in rows) {
-				rows[i] = rows[i].split("\t");
-			}
-			if (rows.length != this.parentMatrix.m) {
-				throw "Invalid size";
-			}
-			if (rows[0].length != this.parentMatrix.n) {
-				throw "Invalid size";
-			}
-
-			for (i in rows) {
-				for (j in rows[i]) {
-					try {
-						this.parentMatrix.setValue(i, j, parseFloat(rows[i][j]));
-					} catch (e) {
-						this.parentMatrix.setValue(i, j, 0);
-					}
-				}
-			}
-			setTimeout(function () {
-				this.parentMatrix.setValue(0, 0, parseFloat(rows[0][0]));
-			}.bind(this), 400);
-		//}, 300);
-	};
-
-
-	matrixDisplay.addEventListener("paste", handlePaste);
-
-	
 
 	var handleChange = function (e) {
 		try {
@@ -233,6 +220,9 @@ var matrix = function (vals, n) {
 		}
 	}
 	document.querySelector("#content").appendChild(this.display);
+	if (name) {
+		window.data[name] = this;
+	}
 }
 
 matrix.prototype.setName = function (name) {
@@ -254,8 +244,20 @@ matrix.prototype.getValue = function (m, n) {
 	return this.intrinsic[m].intrinsic[n];
 }
 
-matrix.prototype.transpose = function () {
-	var out = new matrix(this.n, this.m);
+matrix.prototype.export = function () {
+	var data = "";
+	for (i in this.intrinsic) {
+		if (i != this.intrinsic.length - 1) {
+			data += this.intrinsic[i].intrinsic.join("\t") + "\n";
+		} else {
+			data += this.intrinsic[i].intrinsic.join("\t");
+		}
+	}
+	window.prompt("Hit Crtl-c", data);
+};
+
+matrix.prototype.transpose = function (name) {
+	var out = new matrix(this.n, this.m, name);
 	for (var i = 0; i < this.m; i ++) {
 		for (var j = 0; j < this.n; j ++) {
 			out.setValue(j, i, this.getValue(i, j));
@@ -263,3 +265,57 @@ matrix.prototype.transpose = function () {
 	}
 	return out;
 };
+
+matrix.prototype.getColumn = function (n) {
+	var out = [];
+	for (i in this.intrinsic) {
+		out.push(this.intrinsic[i].intrinsic[n]);
+	}
+	return new vector(out);
+};
+
+matrix.prototype.getRow = function (m) {
+	return this.intrinsic[m];
+};
+
+matrix.prototype.mmult = function (that) {
+	var outMatrix = new matrix(this.m, that.n);
+	if (this.n == that.m) {
+		for (var i = 0; i < that.n; i ++) {
+			var thatColumn = that.getColumn(i);
+			for (var j = 0; j < this.m; j ++) {
+				var thisRow = this.getRow(j);
+				outMatrix.setValue(i, j, thatColumn.dot(thisRow));
+			}
+		}
+		return outMatrix;
+	} else {
+		throw "Matrices must have valid corresponding dimensions";
+	}
+};
+
+document.addEventListener("DOMContentLoaded", function (e) {
+	document.querySelector("#content").addEventListener("paste", function (e) {
+		var pasteData = e.clipboardData.getData('text/plain');
+		var rows = pasteData.split("\n");
+		if (rows[rows.length - 1].length == 0) {
+			rows.pop();
+		}
+		for (i in rows) {
+			rows[i] = rows[i].split("\t");
+		}
+		
+		for (i in rows) {
+			for (j in rows[i]) {
+				try {
+					rows[i][j] = parseFloat(rows[i][j]);
+				} catch (e) {
+					rows[i][j] = rows[i][j];
+				}
+			}
+		}
+		var name = guid();
+		new matrix(rows, undefined, name);
+		console.log(name);
+	});
+});

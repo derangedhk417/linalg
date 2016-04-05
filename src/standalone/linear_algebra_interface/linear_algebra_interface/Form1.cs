@@ -14,7 +14,7 @@ namespace linear_algebra_interface {
     public partial class MainForm : Form {
 
         public ChromiumWebBrowser viewBrowser;
-        public ChromiumWebBrowser consoleBrowser;
+        public ChromiumWebBrowser consoleBrowser; 
 
         public MainForm() {
             InitializeComponent();

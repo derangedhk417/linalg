@@ -1,0 +1,193 @@
+/*
+ * Author:       Adam Robinson
+ * Date Created: 11/25/2015
+ */
+
+/*
+ * This file is just a basic template CSS file. It contains some useful but imperfect media queries.
+ * These queries make it easier to write responsive CSS. They are fairly self-explanatory.
+ */
+
+/* 
+ * Dont Forget to put this in the head of your html file:
+ * <meta name="viewport" content="width=device-width" />
+ */
+
+
+ /* This fixes the touch delay in Microsoft browsers */
+html {
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+	border: none;
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+	font-family: consolas;
+}
+
+#content {
+	height: 100%;
+	width: 100%;
+	overflow: scroll;
+}
+
+.item {
+	padding: 15px;
+	background-color: #F5F5F5;
+	border-radius: 3px;
+	box-shadow: 0px 1px 1px 0px #888888;
+	display: inline-block;
+	margin: 35px;
+	width: auto;
+	height: auto;
+	overflow-x: hidden;
+	text-align: center;
+}
+
+.item-detail {
+	display: inline-block;
+	width: 300px;
+	height: auto;
+	padding: 10px;
+}
+
+.item-title {
+	display: block;
+	text-align: center;
+	font-weight: bold;
+	width: 100%;
+}
+
+.item-info {
+	text-align: left;
+}
+
+.item-data {
+	text-align: center;
+}
+
+.matrix {
+	height: auto;
+	width: auto;
+	overflow: hidden;
+	display: inline-block;
+	border-right: 4px solid black;
+	border-left: 4px solid black;
+	padding-left: 5px;
+	padding-right: 5px;
+	transition: 0.3s ease all;
+}
+
+.matrix > .row {
+	height: auto;
+	width: auto;
+	display: block;
+	clear: both;
+	overflow: hidden;
+}
+
+.matrix > .row > .element {
+	height: 45px;
+	width: 45px;
+	margin: 3px;
+	float: left;
+}
+
+.matrix > .row > .element > .matrix-element {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	line-height: 35px;
+	border: none;
+	outline: none;
+	background-color: #F5F5F5;
+	font-family: consolas;
+}
+
+
+
+
+
+
+
+
+
+
+/*////////////////////////////////////////////////////////////////////////*/
+/* Tablet                                                                 */
+/*////////////////////////////////////////////////////////////////////////*/
+@media (max-width: 900px) and (orientation: portrait), (max-width: 1100px) and (orientation: landscape) and (max-height: 900px) {
+    
+}
+/*////////////////////////////////////////////////////////////////////////////*/
+/* END Tablet                                                                 */
+/*////////////////////////////////////////////////////////////////////////////*/
+
+
+
+/*////////////////////////////////////////////////////////////////////////*/
+/* Tablet Portrait                                                        */
+/*////////////////////////////////////////////////////////////////////////*/
+@media (max-width: 900px) and (orientation: portrait) {
+    
+}
+/*////////////////////////////////////////////////////////////////////////*/
+/* END Tablet Portrait                                                    */
+/*////////////////////////////////////////////////////////////////////////*/
+
+
+
+/*////////////////////////////////////////////////////////////////////////*/
+/* Tablet Landscape                                                       */
+/*////////////////////////////////////////////////////////////////////////*/
+@media (max-width: 1100px) and (orientation: landscape) and (max-height: 900px) {
+    
+}
+/*////////////////////////////////////////////////////////////////////////*/
+/* END Tablet Landscape                                                   */
+/*////////////////////////////////////////////////////////////////////////*/
+
+
+
+
+
+
+
+/*////////////////////////////////////////////////////////////////////////*/
+/* Phone                                                                  */
+/*////////////////////////////////////////////////////////////////////////*/
+@media (max-width: 600px) and (orientation: portrait), (max-width: 760px) and (orientation: landscape) {
+   
+}
+/*////////////////////////////////////////////////////////////////////////////*/
+/* END Phone                                                                  */
+/*////////////////////////////////////////////////////////////////////////////*/
+
+
+
+/*////////////////////////////////////////////////////////////////////////*/
+/* Phone Portrait                                                         */
+/*////////////////////////////////////////////////////////////////////////*/
+@media (max-width: 600px) and (orientation: portrait) {
+   
+}
+/*////////////////////////////////////////////////////////////////////////*/
+/* END Phone Portrait                                                     */
+/*////////////////////////////////////////////////////////////////////////*/
+
+
+
+/*////////////////////////////////////////////////////////////////////////*/
+/* Phone Landscape                                                        */
+/*////////////////////////////////////////////////////////////////////////*/
+@media (max-width: 760px) and (orientation: landscape) {
+    
+}
+/*////////////////////////////////////////////////////////////////////////*/
+/* END Phone Landscape                                                    */
+/*////////////////////////////////////////////////////////////////////////*/

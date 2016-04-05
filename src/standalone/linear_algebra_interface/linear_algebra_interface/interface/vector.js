@@ -23,6 +23,15 @@ var vector = function (arr, name) {
 	}
 };
 
+vector.prototype.containsNaN = function () {
+	for (i in this.intrinsic) {
+		if (isNaN(this.intrinsic[i])) {
+			return true;
+		}
+	}
+	return false;
+};
+
 vector.prototype.sumSquared = function() {
 	var sum = 0;
 	for (i in this.intrinsic) {
@@ -58,12 +67,27 @@ vector.prototype.dot = function (vec) {
 
 	if (other.n == this.n) {
 		var products = [];
-		for (i in this.intrinsic) {
-			products.push(this.intrinsic[i] * other.intrinsic[i]);
+		if (this.containsNaN() || other.containsNaN()) {
+			for (i in this.intrinsic) {
+				if (isNaN(this.intrinsic[i]) || isNaN(other.intrinsic[i])) {
+					products.push(this.intrinsic[i] + " * " + other.intrinsic[i]);
+				} else {
+					products.push(this.intrinsic[i] * other.intrinsic[i]);
+				}
+				var outString = "";
+				for (j in products) {
+					outString += products[j] + " + ";
+				}
+				return outString;
+			}
+		} else {
+			for (i in this.intrinsic) {
+				products.push(this.intrinsic[i] * other.intrinsic[i]);
+			}
+			return products.reduce(function (last, current) {
+				return last + current;
+			});
 		}
-		return products.reduce(function (last, current) {
-			return last + current;
-		});
 	} else {
 		throw ("vectors have different dimensions!");
 	}

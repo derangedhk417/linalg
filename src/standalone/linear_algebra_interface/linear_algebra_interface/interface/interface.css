@@ -96,17 +96,29 @@ html, body {
 	width: 45px;
 	margin: 3px;
 	float: left;
+	position: relative;
 }
 
 .matrix > .row > .element > .matrix-element {
-	width: 100%;
-	height: 100%;
+	width: 39px;
+	height: 39px;
 	text-align: center;
-	line-height: 35px;
+	line-height: 39px;
 	border: none;
 	outline: none;
 	background-color: #F5F5F5;
 	font-family: consolas;
+	transition: 0.3s ease all;
+}
+
+.matrix > .row > .element > .matrix-element:focus {
+	position: fixed;
+	width: 300px;
+	height: 39px;
+	background-color: white;
+	z-index: 2;
+	pointer-events: none;
+	border: 1px solid black;
 }
 
 

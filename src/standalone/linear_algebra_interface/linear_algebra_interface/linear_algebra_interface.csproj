@@ -126,7 +126,8 @@
   <Import Project="..\packages\cef.redist.x86.3.2526.1362\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2526.1362\build\cef.redist.x86.targets')" />
   <Import Project="..\packages\CefSharp.Common.47.0.3\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.47.0.3\build\CefSharp.Common.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>robocopy $(SolutionDir)linear_algebra_interface\interface $(TargetDir)\interface /s</PostBuildEvent>
+    <PostBuildEvent>robocopy $(SolutionDir)linear_algebra_interface\interface $(TargetDir)\interface /s
+exit /b 0</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

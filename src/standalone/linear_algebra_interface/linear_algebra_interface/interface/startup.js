@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function (e) {
 	document.querySelector("#content").addEventListener("paste", function (e) {
+		var name = window.prompt("What should this matrix be named?");
 		var pasteData = e.clipboardData.getData('text/plain');
 		var rows = pasteData.split("\n");
 		if (rows[rows.length - 1].length == 0) {
@@ -11,14 +12,14 @@ document.addEventListener("DOMContentLoaded", function (e) {
 		
 		for (i in rows) {
 			for (j in rows[i]) {
-				try {
+				if (!isNaN(rows[i][j])) {
 					rows[i][j] = parseFloat(rows[i][j]);
-				} catch (e) {
-					rows[i][j] = rows[i][j];
+				} else {
+					rows[i][j] = name + " (" + (parseInt(i) + 1) + ", " + (parseInt(j) + 1) + ")";
 				}
 			}
 		}
-		var name = window.prompt("What should this matrix be named?");
+		
 		new matrix(rows, undefined, name);
 	});
 });

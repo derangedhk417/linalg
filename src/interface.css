@@ -33,6 +33,7 @@ html, body {
 #content {
 	height: 100%;
 	width: 100%;
+	overflow: scroll;
 }
 
 .item {
@@ -44,42 +45,75 @@ html, body {
 	margin: 35px;
 	width: auto;
 	height: auto;
-}
-
-.item-top {
-	width: auto;
-	height: auto;
-	overflow: hidden;
-}
-
-.item-title {
-	float: left;
-	background-color: #ABEAFF;
-	width: 80px;
-	height: 400px;
+	overflow-x: hidden;
 	text-align: center;
 }
 
-.item-title > span {
-	display: inline-block;
-  	vertical-align: middle;
-  	line-height: normal;
-  	line-height: 400px;
-}
-
-.item-content {
-	float: left;
-	height: 400px;
-	width: 400px;
-}
-
 .item-detail {
-	width: calc(100% - 30px);
+	display: inline-block;
+	width: 300px;
 	height: auto;
-	padding: 15px;
-	clear: both;
-	background-color: #D9D9D9;
+	padding: 10px;
 }
+
+.item-title {
+	display: block;
+	text-align: center;
+	font-weight: bold;
+	width: 100%;
+}
+
+.item-info {
+	text-align: left;
+}
+
+.item-data {
+	text-align: center;
+}
+
+.matrix {
+	height: auto;
+	width: auto;
+	overflow: hidden;
+	display: inline-block;
+	border-right: 4px solid black;
+	border-left: 4px solid black;
+	padding-left: 5px;
+	padding-right: 5px;
+	transition: 0.3s ease all;
+}
+
+.matrix > .row {
+	height: auto;
+	width: auto;
+	display: block;
+	clear: both;
+	overflow: hidden;
+}
+
+.matrix > .row > .element {
+	height: 45px;
+	width: 45px;
+	margin: 3px;
+	float: left;
+}
+
+.matrix > .row > .element > .matrix-element {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	line-height: 35px;
+	border: none;
+	outline: none;
+	background-color: #F5F5F5;
+	font-family: consolas;
+}
+
+
+
+
+
+
 
 
 

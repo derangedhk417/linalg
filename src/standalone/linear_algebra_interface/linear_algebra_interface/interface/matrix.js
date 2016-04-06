@@ -228,3 +228,10 @@ matrix.prototype.mmult = function (that, name) {
 		throw "Matrices have invalid dimensions for multiplication";
 	}
 };
+
+// Swaps row i with row j and vice versa
+matrix.prototype.swap = function (i, j) {
+	var tmp = this.get(i, undefined);
+	this.set(i, undefined, this.get(j, undefined));
+	this.set(j, undefined, tmp);
+};

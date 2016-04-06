@@ -42,6 +42,10 @@ function clone(obj) {
 
 var epsilon = 0.000001;
 
+function isZero(n) {
+	return n < epsilon;
+}
+
 // Argument must be array or another vector
 // Calls a function based on the constructor argument
 // Either way, it copies the values from the argument, it does not work by reference
@@ -309,6 +313,26 @@ vector.prototype.mult = function (n) {
 		}
 	});
 	return new vector(newVector);
+};
+
+vector.prototype.add = function (that) {
+	var newVector = [];
+	this.each(function (e, i, a) {
+		if (isNaN(e)) {
+			newVector.push("" + e + " + " + that.get(i));
+		} else {
+			newVector.push(e + that.get(i));
+		}
+	});
+	return new vector(newVector);
+}
+
+vector.prototype.firstNonZero = function () {
+	for (var i = 0; i < this.indices.length; i ++) {
+		if (!isZero(this.get(i)) {
+			return i;
+		}
+	}
 };
 
 // vector.prototype.cross = function (vec) {

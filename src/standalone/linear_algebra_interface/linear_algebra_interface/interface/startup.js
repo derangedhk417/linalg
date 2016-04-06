@@ -15,11 +15,11 @@ document.addEventListener("DOMContentLoaded", function (e) {
 				if (!isNaN(rows[i][j])) {
 					rows[i][j] = parseFloat(rows[i][j]);
 				} else {
-					rows[i][j] = name + " (" + (parseInt(i) + 1) + ", " + (parseInt(j) + 1) + ")";
+					rows[i][j] = name + ".get(" + (parseInt(i)) + ", " + (parseInt(j)) + ")";
 				}
 			}
 		}
 		
-		new matrix(rows, undefined, name);
+		new matrix(rows, name);
 	});
 });

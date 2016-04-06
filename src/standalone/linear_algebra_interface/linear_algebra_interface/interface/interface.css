@@ -51,8 +51,9 @@ html, body {
 
 .item-detail {
 	display: inline-block;
-	width: 300px;
+	width: auto;
 	height: auto;
+	min-width: 100px;
 	padding: 10px;
 }
 
@@ -106,7 +107,7 @@ html, body {
 	line-height: 39px;
 	border: none;
 	outline: none;
-	background-color: #F5F5F5;
+	background-color: rgba(0,0,0,0);
 	font-family: consolas;
 	transition: 0.3s ease all;
 }

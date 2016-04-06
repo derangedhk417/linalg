@@ -1,17 +1,25 @@
 // Creates a matrix and optionally names it.
 // If the name is specified, it will also generate a display for it
 var matrix = function (vecs, name) {
-	this.m = vecs.length;
-	if (vecs[0] instanceof vector) {
-		this.indices = clone(vecs);
+	if (vecs instanceof matrix) {
+		this.indices = [];
+		for (var i in vecs.indices) {
+			this.indices.push(new vector(vecs.indices[i]));
+		}
 	} else {
-		this.indices = clone(vecs);
-		for (var i in this.indices) {
-			this.indices[i] = new vector(this.indices[i]);
+		if (vecs[0] instanceof vector) {
+			this.indices = clone(vecs);
+		} else {
+			this.indices = clone(vecs);
+			for (var i in this.indices) {
+				this.indices[i] = new vector(this.indices[i]);
+			}
 		}
 	}
-
+	
+	this.m = this.indices.length;
 	this.n = this.indices[0].n();
+	this.j_offset = 0;
 
 	if (name) {
 		this.setName(name);
@@ -106,7 +114,7 @@ matrix.prototype.setName = function (name) {
 
 // Returns the part of the interface that holds the value of the spcified cell
 matrix.prototype.getInput = function (i, j) {
-	return this.display.childNodes[1].childNodes[0].childNodes[i].childNodes[j].firstChild;
+	return this.display.childNodes[1].childNodes[0].childNodes[i].childNodes[j + this.j_offset].firstChild;
 };
 
 matrix.prototype.destroy = function () {

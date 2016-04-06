@@ -238,14 +238,15 @@ vector.prototype._unitVectorVal = function () {
 
 // Attempts to evaluate any elements in the vector that are expressions
 vector.prototype.evaluate = function () {
+	var output = new vector(this);
 	this.each(function (e, i, a) {
-		debugger;
 		try {
-			this.set(i, eval(e));
+			output.set(i, eval(e));
 		} catch (e) {
 			console.warn("eval(" + this.name + ".get(" + i + ")) threw an exception.");
 		}
 	});
+	return output;
 };
 
 // Returns the dimensions of the vector

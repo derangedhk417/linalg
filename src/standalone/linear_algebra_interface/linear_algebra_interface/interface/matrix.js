@@ -35,10 +35,12 @@ matrix.prototype.show = function () {
 	matrixDisplay.parentMatrix = this;
 
 	var handleChange = function (e) {
-		if (!isNaN(this.value)) {
-			this.matrixParent.set(this.i, this.j, parseFloat(this.value));
-		} else {
-			this.matrixParent.set(this.i, this.j, this.value);
+		if (this.value.length > 0) {
+			if (!isNaN(this.value)) {
+				this.matrixParent.set(this.i, this.j, parseFloat(this.value));
+			} else {
+				this.matrixParent.set(this.i, this.j, this.value);
+			}
 		}
 	};
 
@@ -58,7 +60,7 @@ matrix.prototype.show = function () {
 			input.i = i;
 			input.j = j;
 			input.matrixParent = this;
-			input.addEventListener("keyup", handleChange);
+			input.addEventListener("blur", handleChange);
 		}
 	}
 	document.querySelector("#content").appendChild(this.display);
@@ -131,18 +133,9 @@ matrix.prototype._setIndice = function (i, j, k) {
 };
 
 matrix.prototype._setRow = function (i, k) {
-	var that;
-	if (k instanceof Array) {
-		that = new vector(k);
-	} else if (k instanceof vector) {
-		that = k;
-	} else {
-		throw "Specified value is not a vector.";
-	}
-
-	this.indices[i] = clone(k);
+	this.indices[i] = new vector(k);
 	for (var u = 0; u < this.n; u ++) {
-		this.getInput(u).value = that.indices[u].toString();
+		this.set(i, u, this.get(i, u));
 	}
 };
 
@@ -157,8 +150,7 @@ matrix.prototype._setColumn = function (j, k) {
 	}
 
 	for (var i = 0; i < this.m; i ++) {
-		this.indices[i].indices[j] = that.indices[i];
-		this.getInput(i, j).value = that.indices[i].toString();
+		this.set(i, j, that.indices[i]);
 	}
 };
 
@@ -167,7 +159,7 @@ matrix.prototype._setColumn = function (j, k) {
 matrix.prototype.export = function () {
 	var data = "";
 	for (var i = 0; i < this.m; i ++) {
-		if (i != this.intrinsic.length - 1) {
+		if (i != this.indices.length - 1) {
 			data += this.get(i).indices.join("\t") + "\n";
 		} else {
 			data += this.get(i).indices.join("\t");
@@ -177,35 +169,54 @@ matrix.prototype.export = function () {
 	window.prompt("Hit Ctrl-c", data);
 };
 
+// Calls the underlying evaluate function on each vector in the matrix
+matrix.prototype.evaluate = function () {
+	for (var i = 0; i < this.m; i ++) {
+		this.set(i, undefined, this.get(i).evaluate());
+	}
+};
+
 // Creates the transposition of the matrix
 matrix.prototype.transpose = function (name) {
-	var newMatrix = [];
+	var arr = [];
+	for (var i = 0; i < this.n; i ++) {
+		var tmp = [];
+		for (var j = 0; j < this.m; j ++) {
+			tmp.push(0);
+		}
+		arr.push(tmp);
+	}
+	var m = new matrix(arr, name);
 	for (var i = 0; i < this.m; i ++) {
 		var tmp = [];
 		for (var j = 0; j < this.n; j ++) {
 			tmp.push(this.get(i, j));
 		}
-		newMatrix.push(tmp);
+		m.set(undefined, i, tmp);
 	}
-	return new matrix(newMatrix, name);
+	return m;
 };
 
-// matrix.prototype.mmult = function (that) {
-// 	var outMatrix = new matrix(this.m, that.n);
-// 	if (this.n == that.m) {
-// 		for (var i = 0; i < that.n; i ++) {
-// 			var thatColumn = that.getColumn(i);
-// 			for (var j = 0; j < this.m; j ++) {
-// 				var thisRow = this.getRow(j);
-// 				outMatrix.setValue(i, j, thatColumn.dot(thisRow));
-// 			}
-// 		}
-// 		return outMatrix;
-// 	} else {
-// 		throw "Matrices must have valid corresponding dimensions";
-// 	}
-// };
-
-// matrix.prototype.augment = function (mat) {
-	
-// };
+matrix.prototype.mmult = function (that, name) {
+	var arr = [];
+	for (var i = 0; i < this.m; i ++) {
+		var tmp = [];
+		for (var j = 0; j < that.n; j ++) {
+			tmp.push(0);
+		}
+		arr.push(tmp);
+	}
+	var outMatrix = new matrix(arr, name);
+	if (this.n == that.m) {
+		for (var i = 0; i < that.n; i ++) {
+			var thatColumn = that.get(undefined, i);
+			for (var j = 0; j < this.m; j ++) {
+				var thisRow = this.get(j, undefined);
+				outMatrix.set(j, i, thatColumn.dot(thisRow));
+			}
+		}
+		return outMatrix;
+	} else {
+		throw "Matrices have invalid dimensions for multiplication";
+	}
+};

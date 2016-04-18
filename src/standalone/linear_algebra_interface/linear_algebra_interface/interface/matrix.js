@@ -47,7 +47,7 @@ matrix.prototype.show = function () {
 			if (!isNaN(this.value)) {
 				this.matrixParent.set(this.i, this.j, parseFloat(this.value));
 			} else {
-				this.matrixParent.set(this.i, this.j, this.value);
+				this.matrixParent.set(this.i, this.j, this.matrixParent.name + ".get(" + (parseInt(this.i)) + ", " + (parseInt(this.j)) + ")");
 			}
 		}
 	};

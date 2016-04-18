@@ -309,7 +309,7 @@ vector.prototype.mult = function (n) {
 		if (isNaN(e)) {
 			newVector.push("" + e + " * " + n);
 		} else {
-			newVector.push(e * n);
+			newVector.push(isZero(e * n) ? 0.0 : e * n);
 		}
 	});
 	return new vector(newVector);

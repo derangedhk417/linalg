@@ -3,7 +3,8 @@
 var aMatrix = function (mat, aug_mat, name) {
 	this.leftMatrix = new matrix(mat);
 	this.augMatrix = new matrix(aug_mat);
-
+	this.inREF = false;
+	this.inRREF = false;
 	if (name) {
 		this.setName(name);
 	}
@@ -33,7 +34,7 @@ aMatrix.prototype.show = function () {
 			if (!isNaN(this.value)) {
 				this.matrixParent.set(this.i, this.j, parseFloat(this.value));
 			} else {
-				this.matrixParent.set(this.i, this.j, this.value);
+				this.matrixParent.set(this.i, this.j, this.matrixParent.name + ".get(" + (parseInt(this.i)) + ", " + (parseInt(this.j)) + ")");
 			}
 		}
 	};
@@ -84,6 +85,8 @@ aMatrix.prototype.show = function () {
 
 aMatrix.prototype.setName = function (name) {
 	this.name = name;
+	this.leftMatrix.name = name + ".leftMatrix";
+	this.augMatrix.name = name + ".augMatrix";
 	window[name] = this;
 	if (!this.display) {
 		this.show();

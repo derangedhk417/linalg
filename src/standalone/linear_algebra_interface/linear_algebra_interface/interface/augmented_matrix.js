@@ -155,13 +155,14 @@ aMatrix.prototype._setIndice = function (i, j, k) {
 };
 
 aMatrix.prototype._setRow = function (i, k) {
+	var that = new vector(k);
 	var left = [];
 	var right = [];
 	for (var u = 0; u < this.leftMatrix.n; u ++) {
-		left.push(k[u]);
+		left.push(k.get(u));
 	}
 	for (var u = 0; u < this.augMatrix.n; u ++) {
-		right.push(k[u + this.leftMatrix.n]);
+		right.push(k.get(u + this.leftMatrix.n));
 	}
 	this.leftMatrix.set(i, undefined, left);
 	this.augMatrix.set(i, undefined, right);
@@ -173,4 +174,9 @@ aMatrix.prototype._setColumn = function (j, k) {
 	} else {
 		this.augMatrix.set(undefined, j, k);
 	}
+};
+
+aMatrix.prototype.swap = function (i, j) {
+	this.leftMatrix.swap(i, j);
+	this.augMatrix.swap(i, j);
 };

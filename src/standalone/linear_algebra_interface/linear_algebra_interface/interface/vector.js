@@ -43,7 +43,7 @@ function clone(obj) {
 var epsilon = 0.000001;
 
 function isZero(n) {
-	return n < epsilon;
+	return Math.abs(n) < epsilon;
 }
 
 // Argument must be array or another vector
@@ -130,7 +130,7 @@ vector.prototype._setIndice = function (i, j) {
 
 vector.prototype._setRange = function (i, j, k) {
 	var newVector = [];
-	for (var u = i, v = 0; (u < this.indices.length) && (u < k.length) && (u <= j); u ++, v ++) {
+	for (var u = i, v = 0; (u < this.indices.length) && (u <= j); u ++, v ++) {
 		this.indices[u] = k[v];
 	}
 };
@@ -321,7 +321,7 @@ vector.prototype.add = function (that) {
 		if (isNaN(e)) {
 			newVector.push("" + e + " + " + that.get(i));
 		} else {
-			newVector.push(e + that.get(i));
+			newVector.push(isZero(e + that.get(i)) ? 0.0 : e + that.get(i));
 		}
 	});
 	return new vector(newVector);

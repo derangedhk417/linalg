@@ -90,3 +90,87 @@ aMatrix.prototype.setName = function (name) {
 	}
 	this.display.querySelector(".item-title").innerHTML = "Matrix " + this.name;
 };
+
+// Gets either the specific cell, the specified row or the specified column
+aMatrix.prototype.get = function (i, j) {
+	if (i != undefined && j != undefined) {
+		return this._getIndice(i, j);
+	} else if (i != undefined) {
+		return this._getRow(i);
+	} else if (j != undefined) {
+		return this._getColumn(j);
+	} else {
+		throw "No arguments specified.";
+	}
+};
+
+aMatrix.prototype._getIndice = function (i, j) {
+	if (j < this.leftMatrix.n) {
+		return this.leftMatrix.get(i, j);
+	} else {
+		return this.augMatrix.get(i, j - this.leftMatrix.n);
+	}
+};
+
+aMatrix.prototype._getRow = function (i) {
+	return this.leftMatrix.get(i).append(this.augMatrix.get(i));
+};
+
+aMatrix.prototype._getColumn = function (j) {
+	if (j < this.leftMatrix.n) {
+		var newVector = [];
+		for (var i = 0; i < this.leftMatrix.m; i ++) {
+			newVector.push(this.leftMatrix.get(i, j));
+		}
+		return new vector(newVector);
+	} else {
+		var newVector = [];
+		for (var i = 0; i < this.leftMatrix.m; i ++) {
+			newVector.push(this.augMatrix.get(i, j - this.leftMatrix.n));
+		}
+		return new vector(newVector);
+	}
+	
+};
+
+// Sets the value of the specific indice, row or column specified
+aMatrix.prototype.set = function (i, j, k) {
+	if (i != undefined && j != undefined) {
+		return this._setIndice(i, j, k);
+	} else if (i != undefined) {
+		return this._setRow(i, k);
+	} else if (j != undefined) {
+		return this._setColumn(j, k);
+	} else {
+		throw "No arguments specified.";
+	}
+};
+
+aMatrix.prototype._setIndice = function (i, j, k) {
+	if (j < this.leftMatrix.n) {
+		this.leftMatrix.set(i, j, k);
+	} else {
+		this.augMatrix.set(i, j - this.leftMatrix.n, k);
+	}
+};
+
+aMatrix.prototype._setRow = function (i, k) {
+	var left = [];
+	var right = [];
+	for (var u = 0; u < this.leftMatrix.n; u ++) {
+		left.push(k[u]);
+	}
+	for (var u = 0; u < this.augMatrix.n; u ++) {
+		right.push(k[u + this.leftMatrix.n]);
+	}
+	this.leftMatrix.set(i, undefined, left);
+	this.augMatrix.set(i, undefined, right);
+};
+
+aMatrix.prototype._setColumn = function (j, k) {
+	if (j < this.leftMatrix.n) {
+		this.leftMatrix.set(undefined, j, k);
+	} else {
+		this.augMatrix.set(undefined, j, k);
+	}
+};

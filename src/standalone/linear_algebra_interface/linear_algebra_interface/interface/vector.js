@@ -329,10 +329,20 @@ vector.prototype.add = function (that) {
 
 vector.prototype.firstNonZero = function () {
 	for (var i = 0; i < this.indices.length; i ++) {
-		if (!isZero(this.get(i)) {
+		if (!isZero(this.get(i))) {
 			return i;
 		}
 	}
+};
+
+vector.prototype.append = function (vec) {
+	var that = new vector(vec);
+	var data = clone(that.indices);
+	var base = clone(this.indices);
+	for (var i = 0; i < data.length; i ++) {
+		base.push(data[i]);
+	}
+	return new vector(base);
 };
 
 // vector.prototype.cross = function (vec) {

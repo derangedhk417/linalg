@@ -112,7 +112,7 @@ matrix.prototype.setName = function (name) {
 	this.display.querySelector(".item-title").innerHTML = "Matrix " + this.name;
 };
 
-// Returns the part of the interface that holds the value of the spcified cell
+// Returns the part of the interface that holds the value of the specified cell
 matrix.prototype.getInput = function (i, j) {
 	return this.display.childNodes[1].childNodes[0].childNodes[i].childNodes[j + this.j_offset].firstChild;
 };

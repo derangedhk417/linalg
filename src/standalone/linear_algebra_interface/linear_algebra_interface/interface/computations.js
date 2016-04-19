@@ -186,6 +186,196 @@ aMatrix.prototype.getPivots = function () {
 	return pivots;
 };
 
+aMatrix.prototype.pivotCount = function () {
+	return this.getPivots().length;
+};
+
+aMatrix.prototype.rank = function () {
+	return this.pivotCount();
+};
+
+aMatrix.prototype.analyze = function () {
+	if (!this.inRREF) {
+		throw "Matix is not in RREF!";
+	}
+
+	// See if the system can be solved
+	for (var i = 0; i < this.leftMatrix.m; i ++) {
+		if (this.leftMatrix.get(i).isZero() && !this.augMatrix.get(i).isZero()) {
+			console.log("  ::  No Solution, inconsistent");
+			return "done";
+		}
+	}
+
+	if (this.rank() == this.leftMatrix.n) {
+		console.log("  ::  Exactly one solution, consistent, one-to-one :");
+		console.log(this.get(undefined, this.leftMatrix.n).get(0, this.leftMatrix.n - 1));
+	} else {
+		console.log("  ::  Multiple solutions, consistent, many-to-one");
+		console.log("      Call this.solve() to find solutions");
+	}
+};
+
+aMatrix.prototype.hasSingleSolution = function () {
+	if (!this.inRREF) {
+		throw "Matix is not in RREF!";
+	}
+
+	// See if the system can be solved
+	for (var i = 0; i < this.leftMatrix.m; i ++) {
+		if (this.leftMatrix.get(i).isZero() && !this.augMatrix.get(i).isZero()) {
+			return false;
+		}
+	}
+
+	if (this.rank() == this.leftMatrix.n) {
+		return true;
+	} else {
+		return false;
+	}
+};
+
+aMatrix.prototype.hasMultipleSolutions = function () {
+	if (!this.inRREF) {
+		throw "Matix is not in RREF!";
+	}
+
+	// See if the system can be solved
+	for (var i = 0; i < this.leftMatrix.m; i ++) {
+		if (this.leftMatrix.get(i).isZero() && !this.augMatrix.get(i).isZero()) {
+			return false;
+		}
+	}
+
+	if (this.rank() == this.leftMatrix.n) {
+		return false;
+	} else {
+		return true;
+	}
+};
+
+aMatrix.prototype.isConsistent = function () {
+	if (this.hasSingleSolution() || this.hasMultipleSolutions()) {
+		return true;
+	} else {
+		return false;
+	}
+};
+
+aMatrix.prototype.specificSolution = function () {
+	if (this.hasSingleSolution()) {
+		return this.get(undefined, this.leftMatrix.n).get(0, this.leftMatrix.n - 1)
+	} else if (this.hasMultipleSolutions()) {
+		var outVector = [];
+		for (var i = 0; i < this.leftMatrix.n; i ++) {
+			outVector.push(0);
+		}
+		var pivots = this.getPivots();
+		for (var i = 0; i < this.rank(); i ++) {
+			var pm = pivots[i][0];
+			var pn = pivots[i][1];
+			outVector[pn] = this.augMatrix.get(pm, 0);
+		}
+		return new vector(outVector);
+	} else {
+		throw "Sysem is inconsistent";
+	}
+}
+
+// The null space is the set of vectors that solve the equation Ax = 0
+// It is also the set of values that when added to the specific solution produce other solutions
+aMatrix.prototype.nullSpace = function () {
+	if (!this.hasMultipleSolutions()) {
+		throw "System has only a single solution. It does not make sense to generate null space.";
+	}
+	var nullBasis = [];
+	var npnzc = this.nonPivotNonZeroColumns();
+	var pivots = this.getPivots();
+	for (var i = 0; i < npnzc.length; i ++) {
+		var solution = [];
+		var column = npnzc[i];
+		for (var j = 0; j < this.leftMatrix.n; j ++) {
+			solution.push(0); // Fill with zeros
+		}
+		// Iterate over the cells in the column
+		for (var j = 0; j < this.leftMatrix.m; j ++) {
+			if (!isZero(this.get(j, column))) {
+				// If this cell is not zero, we need to incorporate it in the solution
+				var pn; // n value for the pivot in this row
+				// Get the pivot n value for this row
+				for (var k = 0; k < pivots.length; k ++) {
+					if (pivots[k][0] == j) {
+						pn = pivots[k][1];
+						break;
+					}
+				}
+				solution[pn] = this.get(j, column);
+				solution[column] = -1;
+			}
+		}
+		nullBasis.push(new vector(solution));
+	}
+	return nullBasis;
+};
+
+aMatrix.prototype.nonPivotNonZeroColumns = function () {
+	if (!this.inRREF) {
+		throw "Matrix is not in RREF!";
+	}
+	var output = [];
+	var pivots = this.getPivots();
+	for (var i = 0; i < this.leftMatrix.n; i ++) {
+		var c = this.leftMatrix.get(undefined, i);
+		var foundPivot = false;
+		for (var j = 0; j < pivots.length; j ++) {
+			if (pivots[j][1] == i) {
+				foundPivot = true;
+			}
+		}
+		if (!foundPivot && !c.isZero()) {
+			output.push(i);
+		}
+	}
+	return output;
+};
+
+aMatrix.prototype.solve = function () {
+	if (this.hasSingleSolution()) {
+		console.log("Single specific solution: ");
+		console.log(this.specificSolution());
+	} else if (this.hasMultipleSolutions()) {
+		console.log("Multiple solutions, specific solution is:");
+		console.log(this.specificSolution());
+		// Need to add null space here
+		console.log("The set of solutions to this system is in the space derived by all possible sums of the specific solution and any number of values in the null space of this matrix.");
+		console.log(this.nullSpace());
+	} else {
+		throw "System is inconsistent";
+	}
+};
+
+// Returns an array of vectors representing the basis of the column space of the matrix
+aMatrix.prototype.columnSpaceBasis = function () {
+	if (!this.inRREF) {
+		throw "Matrix is not in RREF!";
+	}
+
+	if (this.hasSingleSolution()) {
+		// Get all of the pivot columns an return them
+		var output = [];
+		var pivots = this.getPivots();
+		for (var i = 0; i < pivots.length; i ++) {
+			output.push(new vector(this.get(undefined, pivots[i][1])));
+		}
+		return output;
+	} else if (this.hasMultipleSolutions()) {
+
+	} else {
+		throw "System is inconsistent";
+	}
+};
+
+
 // Takes two vectors as arguments
 aMatrix.prototype.gaussEliminate = function (top, bottom) {
 	var coefficient;

@@ -369,7 +369,13 @@ aMatrix.prototype.columnSpaceBasis = function () {
 		}
 		return output;
 	} else if (this.hasMultipleSolutions()) {
-
+		// Get all of the pivot columns an return them
+		var output = [];
+		var pivots = this.getPivots();
+		for (var i = 0; i < pivots.length; i ++) {
+			output.push(new vector(this.get(undefined, pivots[i][1])));
+		}
+		return output;
 	} else {
 		throw "System is inconsistent";
 	}

@@ -9,6 +9,11 @@ var matrix = function (vecs, name) {
 	} else {
 		if (vecs[0] instanceof vector) {
 			this.indices = clone(vecs);
+		} else if (vecs instanceof vector) {
+			this.indices = [];
+			for (var i = 0; i < vecs.n(); i ++) {
+				this.indices.push(new vector([vecs.get(i)]));
+			}
 		} else {
 			this.indices = clone(vecs);
 			for (var i in this.indices) {

@@ -144,11 +144,56 @@ aMatrix.prototype.REF = function () {
 		baseColumn = this.leftMatrix.get(baseRow).firstNonZero();
 	}
 	// By this point the matrix should be in full REF
+	this.inREF = true;
+};
+
+aMatrix.prototype.RREF = function () {
+	if (!this.inREF) {
+		throw "Matrix is not yet in REF!";
+	}
+
+	// Iterate over each pivot column and divide its row by the pivot value
+	var p = this.getPivots();
+
+	for (var i = 0; i < p.length; i ++) {
+		var row = this.get(p[i][0]);
+		var res = row.mult(1.0 / (row.get(p[i][1])));
+		this.set(p[i][0], undefined, res);
+	}
+
+	this.inRREF = true;
+};
+
+
+// Returns an array of ordered pairs representing the coordinates of the pivots of the augmented matrix
+aMatrix.prototype.getPivots = function () {
+	if (!this.inREF) {
+		throw "Matrix is not yet in REF!";
+	}
+
+	var pivots = [];
+
+	var lastColumn = 1000;
+	// Iterate from bottom to top
+	for (var i = this.leftMatrix.m - 1; i >= 0; i --) {
+		if (!this.leftMatrix.get(i).isZero()) {
+			if (this.leftMatrix.get(i).firstNonZero() < lastColumn) {
+				pivots.push([i, this.leftMatrix.get(i).firstNonZero()]);
+				lastColumn = this.leftMatrix.get(i).firstNonZero();
+			}
+		}
+	}
+	return pivots;
 };
 
 // Takes two vectors as arguments
 aMatrix.prototype.gaussEliminate = function (top, bottom) {
-	var coefficient = -bottom.get(0) / top.get(0);
+	var coefficient;
+	if (isNaN(bottom.get(0)) || isNaN(top.get(0))) {
+		coefficient = "-" + bottom.get(0) + " / " + top.get(0);
+	} else {
+		coefficient = -bottom.get(0) / top.get(0);
+	}
 	var additive = top.mult(coefficient);
 	return bottom.add(additive);
 };
